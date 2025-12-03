@@ -21,7 +21,7 @@ export class UrlFeatureExtractorService {
 
     // URL complète utilisée pour les statistiques
     const fullUrl = urlObj.href;
-    const URLLength = fullUrl.length;
+    const URLLength = normalized.length > 0 ? normalized.length - 1 : 0;
 
     // Domaine = hostname complet (avec "www" s'il est présent)
     const domain = urlObj.hostname;
