@@ -17,6 +17,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { UrlFeatureExtractorService } from './services/url-feature-extractor.service';
 import { UrlPredictionService } from './services/url-prediction.service';
 import { UrlFeatures } from './models/url-features.model';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressSpinnerModule, MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {
   DataikuResult,
   DataikuPredictionResponse
@@ -36,8 +40,12 @@ type DataikuClassLabel = '0' | '1';
     MatInputModule,
     MatButtonModule,
     MatExpansionModule,
-    MatIconModule
-  ],
+    MatIconModule,
+    MatToolbarModule,
+    MatProgressBarModule,
+    MatDividerModule,
+    MatProgressSpinner
+],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
