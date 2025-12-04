@@ -1,6 +1,4 @@
 export interface UrlFeatures {
-  [x: string]: any;
-
   URL: string;
   URLLength: number;
 
