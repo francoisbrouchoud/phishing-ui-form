@@ -301,3 +301,101 @@
     flex: 1;
   }
 }
+
+/* Conteneur principal qui regroupe Config + Actions */
+.actions-container {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between; /* Sécurité à gauche, Actions à droite */
+  align-items: center;
+  flex-wrap: wrap; /* Passe à la ligne sur mobile */
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+/* --- Style du sélecteur de sécurité --- */
+.security-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.security-selector .label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
+  text-transform: uppercase;
+}
+
+/* Ajustement des boutons toggle pour être plus fins */
+mat-button-toggle-group {
+  height: 36px;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px !important; /* Arrondi moderne */
+  overflow: hidden;
+}
+
+mat-button-toggle {
+  font-size: 0.85rem;
+  padding: 0 4px;
+}
+
+/* Couleur de l'élément sélectionné */
+mat-button-toggle:checked {
+  background-color: #e3f2fd !important; /* Bleu très clair */
+  color: #1565c0 !important;
+  font-weight: 600;
+}
+
+/* Petite icône dans le toggle */
+.toggle-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* --- Groupe de boutons d'action --- */
+.buttons-group {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Mobile : On empile tout */
+@media (max-width: 650px) {
+  .actions-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .security-selector {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  mat-button-toggle-group {
+    width: 100%;
+  }
+  
+  mat-button-toggle {
+    flex: 1; /* Chaque option prend 1/3 de la largeur */
+  }
+  
+  .buttons-group {
+    width: 100%;
+  }
+  
+  .buttons-group button {
+    flex: 1;
+  }
+}

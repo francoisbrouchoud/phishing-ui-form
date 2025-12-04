@@ -21,6 +21,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressSpinnerModule, MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import {
   DataikuResult,
   DataikuPredictionResponse
@@ -44,7 +45,8 @@ type DataikuClassLabel = '0' | '1';
     MatToolbarModule,
     MatProgressBarModule,
     MatDividerModule,
-    MatProgressSpinner
+    MatProgressSpinner,
+    MatButtonToggleModule
 ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -60,12 +62,27 @@ export class AppComponent {
   features: UrlFeatures | null = null;
   errorMessage = '';
 
+  securityLevel: number = 1;
+
   isLoadingPrediction = false;
   predictionResult: DataikuResult | null = null;
 
   private readonly urlFeatureExtractor = inject(UrlFeatureExtractorService);
   private readonly urlPredictionService = inject(UrlPredictionService);
 
+  formatSecurityLabel(value: number): string {
+    switch (value) {
+      case 0: return 'Bas (Tolérant)';
+      case 1: return 'Normal';
+      case 2: return 'Haute Sécurité';
+      default: return `${value}`;
+    }
+  }
+  
+  get currentSecurityLabel(): string {
+    return this.formatSecurityLabel(this.securityLevel);
+  }
+  
   analyze(): void {
     this.resetPredictionState();
     this.errorMessage = '';

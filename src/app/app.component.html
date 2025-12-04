@@ -10,7 +10,7 @@
       <mat-card class="hero-card mat-elevation-z3">
         <mat-card-header>
           <mat-card-title>Analyseur d'URL</mat-card-title>
-          <mat-card-subtitle>Entrez une URL pour extraire les features et interroger l'IA.</mat-card-subtitle>
+          <mat-card-subtitle>Entrez une URL pour extraire les features et interroger l'API Dataiku.</mat-card-subtitle>
         </mat-card-header>
 
         <mat-card-content class="hero-content">
@@ -32,25 +32,50 @@
               </mat-form-field>
             </div>
 
-            <div class="action-buttons">
-              <button mat-flat-button color="primary" type="submit" class="btn-lg">
-                <mat-icon>manage_search</mat-icon>
-                1. Extraire Features
-              </button>
+            <div class="actions-container">
 
-              <button mat-flat-button color="accent" type="button" (click)="predict()" 
-                    [disabled]="!features || isLoadingPrediction" class="btn-lg">
-              
-              @if (isLoadingPrediction) {
-                <mat-spinner diameter="20"></mat-spinner>
-              } @else {
-                <span class="btn-content-wrapper">
-                  <mat-icon>model_training</mat-icon>
-                  <span>2. Prédire (Dataiku)</span>
-                </span>
-              }
-            </button>
-            </div>
+  <div class="security-selector">
+    <span class="label">Sensibilité :</span>
+    <mat-button-toggle-group [(ngModel)]="securityLevel" name="securityLevel" aria-label="Niveau de sécurité" hideSingleSelectionIndicator>
+      
+      <mat-button-toggle [value]="0" matTooltip="Tolérant : Moins d'alertes">
+        <mat-icon class="toggle-icon">gpp_maybe</mat-icon>
+        <span>Bas</span>
+      </mat-button-toggle>
+
+      <mat-button-toggle [value]="1" matTooltip="Recommandé">
+        <mat-icon class="toggle-icon">verified_user</mat-icon>
+        <span>Normal</span>
+      </mat-button-toggle>
+
+      <mat-button-toggle [value]="2" matTooltip="Strict : Détection maximale">
+        <mat-icon class="toggle-icon">lock</mat-icon>
+        <span>Haut</span>
+      </mat-button-toggle>
+
+    </mat-button-toggle-group>
+  </div>
+
+  <div class="buttons-group">
+    <button mat-stroked-button color="primary" type="submit">
+      <mat-icon>manage_search</mat-icon>
+      1. Extraire
+    </button>
+
+    <button mat-flat-button color="accent" type="button" (click)="predict()" 
+            [disabled]="!features || isLoadingPrediction">
+      @if (isLoadingPrediction) {
+        <mat-spinner diameter="20"></mat-spinner>
+      } @else {
+        <span class="btn-content-wrapper">
+          <mat-icon>model_training</mat-icon>
+          <span>2. Prédire</span>
+        </span>
+      }
+    </button>
+  </div>
+
+</div>
           </form>
 
           @if (errorMessage) {
@@ -168,7 +193,7 @@
                       [class.safe]="p.prediction === '0'" 
                       [class.phishing]="p.prediction === '1'">
               <mat-card-header>
-                <mat-card-title>Résultat de l'IA</mat-card-title>
+                <mat-card-title>Résultat de la classification</mat-card-title>
               </mat-card-header>
               <mat-card-content>
                 <div class="verdict-badge">
