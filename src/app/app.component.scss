@@ -8,6 +8,7 @@
   --warning-color: #f44336;
 }
 
+/* --- LAYOUT GLOBAL --- */
 .app-shell {
   min-height: 100vh;
   background-color: var(--bg-color);
@@ -38,7 +39,7 @@
   gap: 24px;
 }
 
-/* --- HERO CARD --- */
+/* --- HERO CARD (Input) --- */
 .hero-card {
   border-radius: var(--card-radius);
   overflow: hidden;
@@ -57,25 +58,12 @@
   gap: 16px;
 }
 
-.input-wrapper {
+.input-wrapper, .url-input {
   width: 100%;
 }
 
 .url-input {
-  width: 100%;
   font-size: 1.1rem;
-}
-
-.action-buttons {
-  display: flex;
-  gap: 16px;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-}
-
-.btn-lg {
-  padding: 24px 32px; /* Boutons plus gros pour l'action principale */
-  font-size: 1rem;
 }
 
 .alert-box {
@@ -88,6 +76,70 @@
   gap: 12px;
 }
 
+/* --- ACTION AREA (Toggle + Boutons) --- */
+.actions-container {
+  margin-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.security-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.security-selector .label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
+  text-transform: uppercase;
+}
+
+mat-button-toggle-group {
+  height: 36px;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+mat-button-toggle {
+  font-size: 0.85rem;
+  padding: 0 4px;
+}
+
+mat-button-toggle:checked {
+  background-color: #e3f2fd !important;
+  color: #1565c0 !important;
+  font-weight: 600;
+}
+
+.toggle-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.buttons-group {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* --- DASHBOARD GRID --- */
 .dashboard-grid {
   display: grid;
@@ -95,10 +147,9 @@
   gap: 24px;
 }
 
-/* Sur écran large, on sépare features et résultat */
 @media (min-width: 900px) {
   .dashboard-grid {
-    grid-template-columns: 2fr 1fr; /* 2/3 pour features, 1/3 pour résultat */
+    grid-template-columns: 2fr 1fr;
     align-items: start;
   }
 }
@@ -121,7 +172,6 @@
   gap: 12px;
 }
 
-/* La magie : Grille responsive automatique pour les features */
 .features-grid-compact {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -138,10 +188,9 @@
   border-left: 8px solid transparent;
   transition: all 0.3s ease;
   position: sticky;
-  top: 80px; /* Colle le résultat en haut lors du scroll */
+  top: 80px;
 }
 
-/* Styles dynamiques selon la prédiction */
 .result-card.safe {
   border-left-color: var(--success-color);
   background: linear-gradient(to bottom right, #ffffff, #f1f8e9);
@@ -217,161 +266,7 @@
   overflow-x: auto;
 }
 
-.btn-content-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Espace entre l'icône et le texte */
-}
-
-/* Conteneur global pour aligner Slider à gauche et Boutons à droite */
-.controls-container {
-  display: flex;
-  flex-wrap: wrap; /* Permet de passer à la ligne sur mobile */
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(0,0,0,0.08); /* Petite séparation visuelle */
-}
-
-/* --- Style du Slider --- */
-.slider-wrapper {
-  flex: 1;
-  min-width: 280px; /* Largeur min pour ne pas être écrasé */
-  display: flex;
-  flex-direction: column;
-}
-
-.slider-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: -8px; /* Rapproche un peu le slider du titre */
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #555;
-}
-
-.slider-value {
-  color: var(--primary-color);
-  font-weight: 700;
-}
-
-/* Changement de couleur si Haute sécurité */
-.slider-value.highlight {
-  color: #d32f2f; /* Rouge si niveau max */
-}
-
-/* Petits labels "Bas" / "Haut" sous la barre */
-.slider-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.75rem;
-  color: #999;
-  margin-top: -8px; 
-  padding: 0 8px;
-}
-
-/* --- Ajustement des boutons --- */
-.action-buttons {
-  display: flex;
-  gap: 12px;
-}
-
-/* Correction alignement icone bouton (rappel) */
-.btn-content-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Responsive : Sur petit écran, on empile */
-@media (max-width: 600px) {
-  .controls-container {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .action-buttons {
-    justify-content: stretch;
-  }
-  
-  .action-buttons button {
-    flex: 1;
-  }
-}
-
-/* Conteneur principal qui regroupe Config + Actions */
-.actions-container {
-  margin-top: 24px;
-  display: flex;
-  justify-content: space-between; /* Sécurité à gauche, Actions à droite */
-  align-items: center;
-  flex-wrap: wrap; /* Passe à la ligne sur mobile */
-  gap: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #eee;
-}
-
-/* --- Style du sélecteur de sécurité --- */
-.security-selector {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.security-selector .label {
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: #666;
-  text-transform: uppercase;
-}
-
-/* Ajustement des boutons toggle pour être plus fins */
-mat-button-toggle-group {
-  height: 36px;
-  align-items: center;
-  background-color: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px !important; /* Arrondi moderne */
-  overflow: hidden;
-}
-
-mat-button-toggle {
-  font-size: 0.85rem;
-  padding: 0 4px;
-}
-
-/* Couleur de l'élément sélectionné */
-mat-button-toggle:checked {
-  background-color: #e3f2fd !important; /* Bleu très clair */
-  color: #1565c0 !important;
-  font-weight: 600;
-}
-
-/* Petite icône dans le toggle */
-.toggle-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-
-/* --- Groupe de boutons d'action --- */
-.buttons-group {
-  display: flex;
-  gap: 12px;
-}
-
-.btn-content-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Mobile : On empile tout */
+/* --- MOBILE RESPONSIVE --- */
 @media (max-width: 650px) {
   .actions-container {
     flex-direction: column;
@@ -383,19 +278,11 @@ mat-button-toggle:checked {
     align-items: flex-start;
   }
   
-  mat-button-toggle-group {
+  mat-button-toggle-group, .buttons-group {
     width: 100%;
   }
   
-  mat-button-toggle {
-    flex: 1; /* Chaque option prend 1/3 de la largeur */
-  }
-  
-  .buttons-group {
-    width: 100%;
-  }
-  
-  .buttons-group button {
+  mat-button-toggle, .buttons-group button {
     flex: 1;
   }
 }
