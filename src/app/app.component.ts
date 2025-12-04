@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -15,24 +15,14 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 
 import { UrlFeatureExtractorService } from './services/url-feature-extractor.service';
-import { UrlPredictionService, DataikuPredictionResponse } from './services/url-prediction.service';
+import { UrlPredictionService } from './services/url-prediction.service';
 import { UrlFeatures } from './models/url-features.model';
+import {
+  DataikuResult,
+  DataikuPredictionResponse
+} from './models/dataiku.model';
 
-interface DataikuResult {
-  prediction: string;
-  probaPercentile: number;
-  probas: { [label: string]: number };
-  ignored: boolean;
-}
-
-interface DataikuTiming {
-  preProcessing: number;
-  wait: number;
-  enrich: number;
-  preparation: number;
-  prediction: number;
-  postProcessing: number;
-}
+type DataikuClassLabel = '0' | '1';
 
 @Component({
   selector: 'app-root',
@@ -52,35 +42,30 @@ interface DataikuTiming {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Analyseur d’URL';
+  readonly title = 'Analyseur d’URL';
 
-  urlControl = new FormControl('', [Validators.required]);
+  readonly urlControl = new FormControl<string>('', {
+    nonNullable: true,
+    validators: [Validators.required]
+  });
 
   features: UrlFeatures | null = null;
   errorMessage = '';
 
-  // Dataiku
   isLoadingPrediction = false;
   predictionResult: DataikuResult | null = null;
-  predictionTiming: DataikuTiming | null = null;
 
-  constructor(
-    private urlFeatureExtractor: UrlFeatureExtractorService,
-    private urlPredictionService: UrlPredictionService
-  ) {}
+  private readonly urlFeatureExtractor = inject(UrlFeatureExtractorService);
+  private readonly urlPredictionService = inject(UrlPredictionService);
 
-  /**
-   * Étape 1 : analyser l’URL et remplir les features (local, pas d’appel HTTP).
-   */
   analyze(): void {
+    this.resetPredictionState();
     this.errorMessage = '';
-    this.predictionResult = null;
-    this.predictionTiming = null;
-    this.isLoadingPrediction = false;
 
-    const rawUrl = this.urlControl.value || '';
+    const rawUrl = this.urlControl.value.trim();
 
-    if (!rawUrl.trim()) {
+    if (!rawUrl) {
+      this.urlControl.markAsTouched();
       this.errorMessage = 'Veuillez saisir une URL.';
       this.features = null;
       return;
@@ -88,46 +73,33 @@ export class AppComponent {
 
     try {
       this.features = this.urlFeatureExtractor.extract(rawUrl);
-    } catch (e: any) {
-      this.errorMessage = e?.message || 'Erreur lors de l’analyse de l’URL.';
+    } catch (e: unknown) {
+      const message =
+        e instanceof Error ? e.message : 'Erreur lors de l’analyse de l’URL.';
+      this.errorMessage = message;
       this.features = null;
     }
   }
 
-  /**
-   * Étape 2 : envoyer les features (possiblement éditées) à Dataiku.
-   */
   predict(): void {
     if (!this.features) {
       return;
     }
 
     this.errorMessage = '';
-    this.predictionResult = null;
-    this.predictionTiming = null;
     this.isLoadingPrediction = true;
+    this.predictionResult = null;
 
     this.urlPredictionService.predict(this.features).subscribe({
       next: (resp: DataikuPredictionResponse) => {
         this.isLoadingPrediction = false;
 
-        if (resp && resp.result) {
+        if (resp?.result) {
           this.predictionResult = {
             prediction: String(resp.result.prediction),
             probaPercentile: resp.result.probaPercentile,
             probas: resp.result.probas,
             ignored: resp.result.ignored
-          };
-        }
-
-        if (resp && resp.timing) {
-          this.predictionTiming = {
-            preProcessing: resp.timing['preProcessing'],
-            wait: resp.timing['wait'],
-            enrich: resp.timing['enrich'],
-            preparation: resp.timing['preparation'],
-            prediction: resp.timing['prediction'],
-            postProcessing: resp.timing['postProcessing']
           };
         }
       },
@@ -144,16 +116,20 @@ export class AppComponent {
     this.urlControl.setValue('');
     this.features = null;
     this.errorMessage = '';
-    this.predictionResult = null;
-    this.predictionTiming = null;
-    this.isLoadingPrediction = false;
+    this.resetPredictionState();
   }
 
-  getProba(label: string): number | null {
-    if (!this.predictionResult || !this.predictionResult.probas) {
+  getProba(label: DataikuClassLabel): number | null {
+    if (!this.predictionResult?.probas) {
       return null;
     }
     const value = this.predictionResult.probas[label];
     return typeof value === 'number' ? value : null;
+  }
+
+  private resetPredictionState(): void {
+    this.isLoadingPrediction = false;
+    this.predictionResult = null;
+
   }
 }
