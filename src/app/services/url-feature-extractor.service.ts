@@ -145,17 +145,7 @@ export class UrlFeatureExtractorService {
     return false;
   }
 
-  /**
-   * Compte les lettres, chiffres, caractères spéciaux, '?', '=', '&'.
-   *
-   * - NoOfLettersInURL      : toutes les lettres A–Z / a–z
-   * - NoOfDegitsInURL       : tous les chiffres 0–9
-   * - NoOfEqualsInURL       : '='
-   * - NoOfQMarkInURL        : '?'
-   * - NoOfAmpersandInURL    : '&'
-   * - NoOfOtherSpecialChars : tous les caractères
-   *   qui ne sont ni lettre, ni chiffre, ni '/', '-', '_', '.', '?', '=', '&'
-   */
+
   /**
   * Compte les lettres, chiffres, caractères spéciaux, '?', '=', '&'.
   *
@@ -167,8 +157,6 @@ export class UrlFeatureExtractorService {
   * - NoOfOtherSpecialChars : tous les caractères
   *   qui ne sont NI lettre, NI chiffre, NI '&', NI '?', NI '='
   *
-  * ⚠️ Contrairement à la version précédente, on COMPTE désormais
-  * aussi '/', '-', '_', '.', ':', '%', '@', etc. dans otherSpecials.
   */
   private computeCharacterStats(url: string): {
     letters: number;
