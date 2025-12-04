@@ -19,9 +19,9 @@ export interface DataikuPredictionResponse {
 }
 
 interface DataikuOnlyUrlSpecsFeatures {
-  //NoOfOtherSpecialCharsInURL: string;
+  NoOfOtherSpecialCharsInURL: string;
   LetterRatioInURL: string;
-  //SpacialCharRatioInURL: string;
+  SpecialCharRatioInURL: string;
   DegitRatioInURL: string;
   NoOfLettersInURL: string;
   NoOfDegitsInURL: string;
@@ -54,10 +54,9 @@ export class UrlPredictionService {
   predict(features: UrlFeatures): Observable<DataikuPredictionResponse> {
     const payload: DataikuPredictionRequest = {
       features: {
-       // NoOfOtherSpecialCharsInURL:
-       //   String(features.NoOfOtherSpecialCharsInURL),
+        NoOfOtherSpecialCharsInURL: String(features.NoOfOtherSpecialCharsInURL),
         LetterRatioInURL: String(features.LetterRatioInURL),
-        //SpacialCharRatioInURL: String(features.SpacialCharRatioInURL),
+        SpecialCharRatioInURL: String(features.SpecialCharRatioInURL),
         DegitRatioInURL: String(features.DegitRatioInURL),
         NoOfLettersInURL: String(features.NoOfLettersInURL),
         NoOfDegitsInURL: String(features.NoOfDegitsInURL),

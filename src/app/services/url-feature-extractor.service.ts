@@ -27,6 +27,25 @@ export class UrlFeatureExtractorService {
     const domain = urlObj.hostname;
     const DomainLength = domain.length;
 
+    // Pour NoOfLettersInURL : domaine (sans www) + path + query + fragment
+    const domainWithoutWww = domain.startsWith('www.') ? domain.substring(4) : domain;
+    const pathPart = urlObj.pathname || '';
+
+    // urlObj.search contient déjà "?query" -> on enlève le "?"
+    const searchPart = urlObj.search ? urlObj.search.substring(1) : '';
+
+    // urlObj.hash contient déjà "#fragment" -> on enlève le "#"
+    const hashPart = urlObj.hash ? urlObj.hash.substring(1) : '';
+
+    // concatène domaine sans www + path + query + fragment
+    const hostPathQueryFragment = domainWithoutWww + pathPart + searchPart + hashPart;
+    const lettersInHostPathQueryFragment = hostPathQueryFragment.replace(/[^A-Za-z]/g, '');
+    
+    const NoOfLettersInURL =
+  lettersInHostPathQueryFragment.length > 0
+    ? lettersInHostPathQueryFragment.length - 1
+    : 0;
+
     const isIp = this.isIpAddress(domain);
     const IsDomainIP = isIp ? 1 : 0;
 
@@ -73,7 +92,8 @@ export class UrlFeatureExtractorService {
       TLDLength,
       NoOfSubDomain,
 
-      NoOfLettersInURL: charStats.letters,
+      NoOfLettersInURL,
+
       LetterRatioInURL,
 
       NoOfDegitsInURL: charStats.digits,
@@ -83,11 +103,10 @@ export class UrlFeatureExtractorService {
       NoOfQMarkInURL: charStats.qMarks,
       NoOfAmpersandInURL: charStats.ampersands,
 
-      // ⬇️ ici on utilise la valeur calculée façon Python
-      //NoOfOtherSpecialCharsInURL,
+      NoOfOtherSpecialCharsInURL,
 
-      //SpacialCharRatioInURL,
-      CharContinuationRate
+      CharContinuationRate,
+      SpecialCharRatioInURL
     };
 
     return features;

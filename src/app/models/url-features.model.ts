@@ -1,4 +1,5 @@
 export interface UrlFeatures {
+  [x: string]: any;
   // URL brute utilisée pour les stats
   URL: string;
   URLLength: number;
@@ -27,10 +28,10 @@ export interface UrlFeatures {
   NoOfEqualsInURL: number;
   NoOfQMarkInURL: number;
   NoOfAmpersandInURL: number;
-  //NoOfOtherSpecialCharsInURL: number;
+  NoOfOtherSpecialCharsInURL: number;
 
   // (otherSpecials + ? + & + =) / URLLength
-  //SpacialCharRatioInURL: number;
+  SpecialCharRatioInURL: number;
 
   // Continuité des classes de caractères (lettre / chiffre / autre)
   CharContinuationRate: number;
