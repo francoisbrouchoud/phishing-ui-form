@@ -75,7 +75,7 @@ export class UrlFeatureExtractorService {
       charStats.equals +
       charStats.ampersands;
 
-    const SpacialCharRatioInURL =
+    const SpecialCharRatioInURL =
       URLLength > 0 ? specialForRatio / URLLength : 0;
 
     const CharContinuationRate = this.computeCharContinuationRate(fullUrl);
