@@ -1,51 +1,84 @@
 .app-container {
-  max-width: 900px;
-  margin: 32px auto;
-  padding: 0 16px;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 24px 16px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .url-card {
-  margin-bottom: 24px;
+  margin-bottom: 8px;
 }
 
 .url-form {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: 16px;
-  align-items: center;
-  flex-wrap: wrap;
 }
 
 .url-input {
-  flex: 1 1 260px;
+  width: 100%;
 }
 
-.error-message {
-  color: #d32f2f;
-  margin-top: 8px;
+.buttons-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .features-accordion {
   margin-top: 8px;
 }
 
+.prediction-accordion {
+  margin-top: 16px;
+}
+
 .features-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
 }
 
-.features-table tr:nth-child(even) {
-  background-color: rgba(0, 0, 0, 0.02);
+.features-table tr {
+  vertical-align: top;
 }
 
 .feature-name {
+  width: 220px;
+  padding: 6px 16px 6px 0;
   font-weight: 500;
-  padding: 4px 8px;
-  width: 40%;
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .feature-value {
-  padding: 4px 8px;
-  word-break: break-all;
+  padding: 4px 0;
+}
+
+.feature-field {
+  width: 100%;
+}
+
+.prediction-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.proba-list {
+  margin: 4px 0 12px;
+  padding-left: 20px;
+}
+
+.error-message {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #d32f2f; // teinte "error" Material
+}
+
+.error-icon {
+  font-size: 20px;
 }
