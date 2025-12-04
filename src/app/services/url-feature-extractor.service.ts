@@ -5,10 +5,7 @@ import { UrlFeatures } from '../models/url-features.model';
   providedIn: 'root'
 })
 export class UrlFeatureExtractorService {
-  /**
-   * Point d'entrée : extrait toutes les features "OnlyURLSpecs"
-   * à partir d'une URL saisie par l'utilisateur.
-   */
+
   extract(rawUrl: string): UrlFeatures {
     const normalized = this.normalizeUrl(rawUrl);
 
@@ -19,32 +16,20 @@ export class UrlFeatureExtractorService {
       throw new Error('URL invalide');
     }
 
-    // URL complète utilisée pour les statistiques
     const fullUrl = urlObj.href;
-    const URLLength = normalized.length > 0 ? normalized.length - 1 : 0;
+    const URLLength = normalized.length;
 
-    // Domaine = hostname complet (avec "www" s'il est présent)
     const domain = urlObj.hostname;
     const DomainLength = domain.length;
 
-    // Pour NoOfLettersInURL : domaine (sans www) + path + query + fragment
+    // Culcul NoOfLettersInURL : domaine (sans www) + path + query + fragment
     const domainWithoutWww = domain.startsWith('www.') ? domain.substring(4) : domain;
     const pathPart = urlObj.pathname || '';
-
-    // urlObj.search contient déjà "?query" -> on enlève le "?"
     const searchPart = urlObj.search ? urlObj.search.substring(1) : '';
-
-    // urlObj.hash contient déjà "#fragment" -> on enlève le "#"
     const hashPart = urlObj.hash ? urlObj.hash.substring(1) : '';
-
-    // concatène domaine sans www + path + query + fragment
     const hostPathQueryFragment = domainWithoutWww + pathPart + searchPart + hashPart;
     const lettersInHostPathQueryFragment = hostPathQueryFragment.replace(/[^A-Za-z]/g, '');
-    
-    const NoOfLettersInURL =
-  lettersInHostPathQueryFragment.length > 0
-    ? lettersInHostPathQueryFragment.length - 1
-    : 0;
+    const NoOfLettersInURL = lettersInHostPathQueryFragment.length;
 
     const isIp = this.isIpAddress(domain);
     const IsDomainIP = isIp ? 1 : 0;
@@ -55,28 +40,17 @@ export class UrlFeatureExtractorService {
 
     const NoOfSubDomain = this.countSubdomains(domain);
 
-    // Statistiques de caractères sur l'URL complète
-        // Statistiques de caractères sur l'URL complète
     const charStats = this.computeCharacterStats(fullUrl);
 
-    const LetterRatioInURL =
-      URLLength > 0 ? charStats.letters / URLLength : 0;
+    const LetterRatioInURL = URLLength > 0 ? charStats.letters / URLLength : 0;
 
-    const DegitRatioInURL =
-      URLLength > 0 ? charStats.digits / URLLength : 0;
+    const DegitRatioInURL = URLLength > 0 ? charStats.digits / URLLength : 0;
 
-    // 🔹 NoOfOtherSpecialCharsInURL selon la logique Python (urlsplit + host/path/query/fragment)
     const NoOfOtherSpecialCharsInURL = this.computeNoOfOtherSpecialChars(urlObj);
 
-    // SpacialCharRatioInURL = (autres spéciaux + ? + & + =) / URLLength
-    const specialForRatio =
-      NoOfOtherSpecialCharsInURL +
-      charStats.qMarks +
-      charStats.equals +
-      charStats.ampersands;
+    const specialForRatio = NoOfOtherSpecialCharsInURL + charStats.qMarks + charStats.equals + charStats.ampersands;
 
-    const SpecialCharRatioInURL =
-      URLLength > 0 ? specialForRatio / URLLength : 0;
+    const SpecialCharRatioInURL = URLLength > 0 ? specialForRatio / URLLength : 0;
 
     const CharContinuationRate = this.computeCharContinuationRate(fullUrl);
 
@@ -112,13 +86,7 @@ export class UrlFeatureExtractorService {
     return features;
   }
 
-  // ---------------------------------------------------------------------------
-  // Helpers
-  // ---------------------------------------------------------------------------
 
-  /**
-   * Si l'utilisateur oublie le protocole, on ajoute "http://"
-   */
   private normalizeUrl(raw: string): string {
     const trimmed = (raw || '').trim();
     if (!trimmed) {
@@ -129,15 +97,13 @@ export class UrlFeatureExtractorService {
       new URL(trimmed);
       return trimmed;
     } catch {
-      return 'http://' + trimmed;
+      return 'https://' + trimmed;
     }
   }
 
   /**
    * TLD = dernier label du hostname, ex:
-   *  - "www.exemple.co.uk" -> "uk"
    *  - "ipfs.io" -> "io"
-   *  - "198.98.58.123" -> "123"
    */
   private extractTld(hostname: string): string {
     const parts = hostname.split('.').filter(Boolean);
@@ -150,10 +116,7 @@ export class UrlFeatureExtractorService {
   /**
    * Nombre de sous-domaines: max(0, nb_labels - 2)
    * Ex:
-   *  - "www.southbankmosaics.com" -> 3 labels => 1
-   *  - "ipfs.io" -> 2 labels => 0
    *  - "www.dlrect-smtb.jp.ap1.ib.commetryx.com" -> 7 labels => 5
-   *  - "198.98.58.123" -> 4 labels => 2
    */
   private countSubdomains(hostname: string): number {
     const parts = hostname.split('.').filter(Boolean);
@@ -174,7 +137,7 @@ export class UrlFeatureExtractorService {
       return true;
     }
 
-    // IPv6 simplifié: présence de ":" dans le hostname
+    // IPv6
     if (hostname.includes(':')) {
       return true;
     }
@@ -193,20 +156,20 @@ export class UrlFeatureExtractorService {
    * - NoOfOtherSpecialChars : tous les caractères
    *   qui ne sont ni lettre, ni chiffre, ni '/', '-', '_', '.', '?', '=', '&'
    */
-   /**
-   * Compte les lettres, chiffres, caractères spéciaux, '?', '=', '&'.
-   *
-   * - NoOfLettersInURL      : toutes les lettres A–Z / a–z
-   * - NoOfDegitsInURL       : tous les chiffres 0–9
-   * - NoOfEqualsInURL       : '='
-   * - NoOfQMarkInURL        : '?'
-   * - NoOfAmpersandInURL    : '&'
-   * - NoOfOtherSpecialChars : tous les caractères
-   *   qui ne sont NI lettre, NI chiffre, NI '&', NI '?', NI '='
-   *
-   * ⚠️ Contrairement à la version précédente, on COMPTE désormais
-   * aussi '/', '-', '_', '.', ':', '%', '@', etc. dans otherSpecials.
-   */
+  /**
+  * Compte les lettres, chiffres, caractères spéciaux, '?', '=', '&'.
+  *
+  * - NoOfLettersInURL      : toutes les lettres A–Z / a–z
+  * - NoOfDegitsInURL       : tous les chiffres 0–9
+  * - NoOfEqualsInURL       : '='
+  * - NoOfQMarkInURL        : '?'
+  * - NoOfAmpersandInURL    : '&'
+  * - NoOfOtherSpecialChars : tous les caractères
+  *   qui ne sont NI lettre, NI chiffre, NI '&', NI '?', NI '='
+  *
+  * ⚠️ Contrairement à la version précédente, on COMPTE désormais
+  * aussi '/', '-', '_', '.', ':', '%', '@', etc. dans otherSpecials.
+  */
   private computeCharacterStats(url: string): {
     letters: number;
     digits: number;
@@ -240,7 +203,6 @@ export class UrlFeatureExtractorService {
         continue;
       }
 
-      // Cas des ?, =, & (ont leur champ dédié)
       if (c === '?') {
         qMarks++;
         continue;
@@ -254,8 +216,6 @@ export class UrlFeatureExtractorService {
         continue;
       }
 
-      // TOUS les autres caractères non alphanumériques
-      // (/, -, _, ., :, @, %, !, etc.) comptent dans NoOfOtherSpecialCharsInURL
       otherSpecials++;
     }
 
@@ -313,21 +273,8 @@ export class UrlFeatureExtractorService {
   }
 
 
-  private countOtherSpecialCharsLikePhiUSIIL(url: string): number {
-    // 1. retirer le protocole
-    let stripped = url.replace(/^https?:\/\//i, '');
-
-    // 2. retirer www. au début
-    stripped = stripped.replace(/^www\./i, '');
-
-    // 3. compter tous les non alphanumériques
-    // équivalent TS de re.findall(r'[^a-zA-Z0-9]', stripped)
-    const matches = stripped.match(/[^a-zA-Z0-9]/g);
-    return matches ? matches.length : 0;
-  }
-
   private computeNoOfOtherSpecialChars(urlObj: URL): number {
-    // 1. host / path / query / fragment
+
     let host = urlObj.hostname || '';
     const path = urlObj.pathname || '';
 
@@ -359,10 +306,9 @@ export class UrlFeatureExtractorService {
 
     // 4. compter les caractères non alphanumériques sauf ?, =, %
     let count = 0;
-    for (let i = 0; i < s.length; i++) {
-      const ch = s[i];
+    for (const element of s) {
+      const ch = element;
 
-      // ch.isalnum()
       if (/[A-Za-z0-9]/.test(ch)) {
         continue;
       }
