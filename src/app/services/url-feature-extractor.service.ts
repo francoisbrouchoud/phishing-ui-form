@@ -52,7 +52,8 @@ export class UrlFeatureExtractorService {
 
     const SpacialCharRatioInURL = URLLength > 0 ? Math.round((specialForRatio / URLLength) * 1000) / 1000 : 0;
 
-    const CharContinuationRate = this.computeCharContinuationRate(fullUrl);
+    const CharContinuationRate = this.computeCharContinuationRateFromDomain(domain, tld);
+
 
     const features: UrlFeatures = {
       URL: fullUrl,
@@ -208,46 +209,135 @@ export class UrlFeatureExtractorService {
   }
 
 
+    /**
+  * Normalise le domaine pour le calcul de CharContinuationRate,
+  * à partir de Domain et éventuellement TLD, pour se rapprocher
+  * du calcul du dataset original PhiUSIIL.
+  *
+  * Hypothèse :
+  *  - Domain peut être "www.example.com" ou "example.com"
+  *  - TLD peut être "com", "co.uk", etc.
+  *  - On enlève le TLD et "www." pour obtenir un SLD approximatif
+  */
+  private normalizeDomainForCharCont(domain: string | null | undefined,
+    tld?: string | null): string {
+    if (!domain) {
+      return "";
+    }
+
+    let d = domain.trim().toLowerCase();
+
+    // Enlever le préfixe "www."
+    if (d.startsWith("www.")) {
+      d = d.substring(4);
+    }
+
+    // Si on a un TLD, on essaie de l'enlever à la fin
+    if (tld && tld.trim().length > 0) {
+      const t = tld.trim().toLowerCase();
+      if (d.endsWith("." + t)) {
+        d = d.substring(0, d.length - t.length - 1); // enlever ".tld"
+      } else if (d === t) {
+        // cas bizarre, mais au cas où
+        d = "";
+      }
+    } else {
+      // Pas de TLD fourni : si le domaine contient encore des points,
+      // on enlève la dernière partie comme TLD probable.
+      const lastDot = d.lastIndexOf(".");
+      if (lastDot > 0) {
+        d = d.substring(0, lastDot);
+      }
+    }
+
+    // À ce stade, d est censé représenter le SLD (ou approché)
+    return d;
+  }
+
   /**
-   * CharContinuationRate : continuité des classes de caractères
-   *
-   * On code chaque caractère en 3 classes :
-   *  - 'L' : lettre
-   *  - 'D' : chiffre
-   *  - 'S' : tout le reste
-   *
-   * Puis:
-   *  CharContinuationRate = (# paires successives avec même classe) / (len - 1)
-   *  (0 si longueur <= 1)
-   */
-  private computeCharContinuationRate(url: string): number {
-    const len = url.length;
-    if (len <= 1) {
-      return 0;
-    }
+  * Retourne la longueur max de runs consécutifs pour
+  *  - lettres (L_alpha)
+  *  - chiffres (L_digit)
+  *  - autres (L_special)
+  * dans une chaîne donnée.
+  */
+  private longestRunsByClass(s: string): { L_alpha: number; L_digit: number; L_special: number } {
+    let L_alpha = 0;
+    let L_digit = 0;
+    let L_special = 0;
 
-    const categories: ('L' | 'D' | 'S')[] = [];
+    let currentClass: 'L' | 'D' | 'S' | null = null;
+    let currentLen = 0;
 
-    for (let i = 0; i < len; i++) {
-      const c = url[i];
+    const isLetter = (c: string) => /[A-Za-z]/.test(c);
+    const isDigit = (c: string) => /[0-9]/.test(c);
 
-      if (/[A-Za-z]/.test(c)) {
-        categories.push('L');
-      } else if (/[0-9]/.test(c)) {
-        categories.push('D');
+    for (let i = 0; i < s.length; i++) {
+      const c = s[i];
+      let cls: 'L' | 'D' | 'S';
+
+      if (isLetter(c)) {
+        cls = 'L';
+      } else if (isDigit(c)) {
+        cls = 'D';
       } else {
-        categories.push('S');
+        cls = 'S';
+      }
+
+      if (cls === currentClass) {
+        currentLen++;
+      } else {
+        // On clôt le run précédent
+        if (currentClass === 'L') {
+          L_alpha = Math.max(L_alpha, currentLen);
+        } else if (currentClass === 'D') {
+          L_digit = Math.max(L_digit, currentLen);
+        } else if (currentClass === 'S') {
+          L_special = Math.max(L_special, currentLen);
+        }
+
+        // On démarre un nouveau run
+        currentClass = cls;
+        currentLen = 1;
       }
     }
 
-    let same = 0;
-    for (let i = 1; i < len; i++) {
-      if (categories[i] === categories[i - 1]) {
-        same++;
-      }
+    // Clôturer le dernier run
+    if (currentClass === 'L') {
+      L_alpha = Math.max(L_alpha, currentLen);
+    } else if (currentClass === 'D') {
+      L_digit = Math.max(L_digit, currentLen);
+    } else if (currentClass === 'S') {
+      L_special = Math.max(L_special, currentLen);
     }
 
-    return same / (len - 1);
+    return { L_alpha, L_digit, L_special };
+  }
+
+  /**
+  * Reproduction en TypeScript de la méthode Python
+  * compute_char_continuation_rate_from_row,
+  * mais en version "domain + tld" plutôt que "row".
+  *
+  * Formule :
+  *   (L_alpha_max + L_digit_max + L_special_max) / len(SLD)
+  */
+  private computeCharContinuationRateFromDomain(domain: string | null | undefined,
+    tld?: string | null): number {
+    const sld = this.normalizeDomainForCharCont(domain, tld);
+
+    if (!sld || sld.length === 0) {
+      return 0.0;
+    }
+
+    const { L_alpha, L_digit, L_special } = this.longestRunsByClass(sld);
+    const denom = sld.length;
+
+    if (denom === 0) {
+      return 0.0;
+    }
+
+    return (L_alpha + L_digit + L_special) / denom;
   }
 
 
