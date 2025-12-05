@@ -252,52 +252,51 @@ export class UrlFeatureExtractorService {
 
 
   private computeNoOfOtherSpecialChars(urlObj: URL): number {
-
-    let host = urlObj.hostname || '';
-    const path = urlObj.pathname || '';
-
-    // urlObj.search contient déjà '?query', on retire le '?' pour coller à urlsplit
-    let query = urlObj.search || '';
-    if (query.startsWith('?')) {
-      query = query.substring(1);
+    if (!urlObj) {
+      return 0;
     }
 
-    // urlObj.hash contient déjà '#fragment', on retire le '#'
-    let fragment = urlObj.hash || '';
-    if (fragment.startsWith('#')) {
-      fragment = fragment.substring(1);
+    // On repart de la string brute, comme côté Python
+    let u = urlObj.href || '';
+
+    // 1) strip
+    u = u.trim();
+
+    // 2) supprimer le schéma (http://, https://, etc.)
+    u = u.replace(/^[A-Za-z]+:\/\//, '');
+
+    // 3) supprimer un éventuel "www."
+    u = u.replace(/^www\./, '');
+
+    // 4) décoder les %xx (URL encoding)
+    try {
+      u = decodeURIComponent(u);
+    } catch {
+      // on ignore si ce n'est pas décodable
     }
 
-    // 2. enlever www. au début
-    if (host.startsWith('www.')) {
-      host = host.substring(4);
-    }
+    // 5) décoder les entités HTML (&amp;, &quot;, etc.)
+    u = this.htmlUnescape(u);
 
-    // 3. construire s = host + path + ("?" + query) + ("#" + fragment)
-    let s = host + (path || '');
-    if (query) {
-      s += '?' + query;
-    }
-    if (fragment) {
-      s += '#' + fragment;
-    }
-
-    // 4. compter les caractères non alphanumériques sauf ?, =, %
+    // 6) comptage des "other special chars"
     let count = 0;
-    for (const element of s) {
-      const ch = element;
 
+    for (const ch of u) {
+      // lettre ou chiffre -> on ignore
       if (/[A-Za-z0-9]/.test(ch)) {
         continue;
       }
 
-      if (ch === '?' || ch === '=' || ch === '%') {
+      // '=' '?' '&' -> ignorés, comme en Python
+      if (ch === '=' || ch === '?' || ch === '&') {
         continue;
       }
 
+      // tout le reste = "other special chars"
       count++;
     }
 
     return count;
   }
+
 }
