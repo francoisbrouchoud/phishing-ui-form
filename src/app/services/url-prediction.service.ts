@@ -13,17 +13,20 @@ import {
   providedIn: 'root'
 })
 export class UrlPredictionService {
-  private readonly apiUrl =
-    'https://dss.ga-fl.net/public/api/v1/OnlyURLSpecs/prediction/predict';
+  private readonly baseApiUrl = 'https://dss.ga-fl.net/public/api/v1';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
-  predict(features: UrlFeatures): Observable<DataikuPredictionResponse> {
+  predict(
+    features: UrlFeatures,
+    apiModel: string = 'OnlyURLSpecs/prediction'
+  ): Observable<DataikuPredictionResponse> {
     const payload: DataikuPredictionRequest = {
       features: this.mapToDataikuFeatures(features)
     };
 
-    return this.http.post<DataikuPredictionResponse>(this.apiUrl, payload);
+    const url = `${this.baseApiUrl}/${apiModel}/predict`;
+    return this.http.post<DataikuPredictionResponse>(url, payload);
   }
 
   private mapToDataikuFeatures(features: UrlFeatures): DataikuOnlyUrlSpecsFeatures {

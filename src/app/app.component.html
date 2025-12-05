@@ -56,6 +56,17 @@
     </mat-button-toggle-group>
   </div>
 
+  <div class="model-selector">
+    <span class="label">Modèle API :</span>
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="model-select">
+      <mat-select [(ngModel)]="selectedApiModel" name="apiModel">
+        <mat-option *ngFor="let m of apiModels" [value]="m.value">
+          {{ m.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
   <div class="buttons-group">
     <button mat-stroked-button color="primary" type="submit">
       <mat-icon>manage_search</mat-icon>

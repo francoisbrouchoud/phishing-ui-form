@@ -22,6 +22,7 @@ import { MatProgressSpinnerModule, MatProgressSpinner } from '@angular/material/
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSelectModule } from '@angular/material/select';
 import {
   DataikuResult,
   DataikuPredictionResponse
@@ -46,7 +47,8 @@ type DataikuClassLabel = '0' | '1';
     MatProgressBarModule,
     MatDividerModule,
     MatProgressSpinner,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    MatSelectModule   
 ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
@@ -63,6 +65,15 @@ export class AppComponent {
   errorMessage = '';
 
   securityLevel: number = 1;
+
+  apiModels = [
+    { label: 'PHIUSIIL regénéré', value: 'phiusiil_gen/phiusiil_gen'},
+    { label: 'PHIUSIIL original', value: 'OnlyURLSpecs/prediction' },
+    { label: 'Kaggle Mustafavi', value: 'kaggle1/kaggle1' }
+  ];
+
+  selectedApiModel: string = this.apiModels[0].value;
+
 
   isLoadingPrediction = false;
   predictionResult: DataikuResult | null = null;
@@ -115,7 +126,7 @@ export class AppComponent {
     this.isLoadingPrediction = true;
     this.predictionResult = null;
 
-    this.urlPredictionService.predict(this.features).subscribe({
+    this.urlPredictionService.predict(this.features, this.selectedApiModel).subscribe({
       next: (resp: DataikuPredictionResponse) => {
         this.isLoadingPrediction = false;
 

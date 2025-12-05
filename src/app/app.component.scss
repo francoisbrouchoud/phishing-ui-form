@@ -266,6 +266,17 @@ mat-button-toggle:checked {
   overflow-x: auto;
 }
 
+.model-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.model-select {
+  min-width: 200px;
+}
+
+
 /* --- MOBILE RESPONSIVE --- */
 @media (max-width: 650px) {
   .actions-container {
