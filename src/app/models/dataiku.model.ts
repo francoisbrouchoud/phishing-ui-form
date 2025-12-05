@@ -19,7 +19,7 @@ export interface DataikuPredictionResponse {
 export interface DataikuOnlyUrlSpecsFeatures {
   NoOfOtherSpecialCharsInURL: string;
   LetterRatioInURL: string;
-  SpecialCharRatioInURL: string;
+  SpacialCharRatioInURL: string;
   DegitRatioInURL: string;
   NoOfLettersInURL: string;
   NoOfDegitsInURL: string;

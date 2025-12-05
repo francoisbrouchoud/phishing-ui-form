@@ -44,13 +44,13 @@ export class UrlFeatureExtractorService {
 
     const LetterRatioInURL = URLLength > 0 ? Math.round((NoOfLettersInURL / URLLength) * 1000) / 1000 : 0;
 
-    const DegitRatioInURL = URLLength > 0 ? charStats.digits / URLLength : 0;
+    const DegitRatioInURL = URLLength > 0 ? Math.round((charStats.digits / URLLength) * 1000) / 1000 : 0;
 
     const NoOfOtherSpecialCharsInURL = this.computeNoOfOtherSpecialChars(urlObj);
 
     const specialForRatio = NoOfOtherSpecialCharsInURL + charStats.qMarks + charStats.equals + charStats.ampersands;
 
-    const SpecialCharRatioInURL = URLLength > 0 ? specialForRatio / URLLength : 0;
+    const SpacialCharRatioInURL = URLLength > 0 ? Math.round((specialForRatio / URLLength) * 1000) / 1000 : 0;
 
     const CharContinuationRate = this.computeCharContinuationRate(fullUrl);
 
@@ -80,7 +80,7 @@ export class UrlFeatureExtractorService {
       NoOfOtherSpecialCharsInURL,
 
       CharContinuationRate,
-      SpecialCharRatioInURL
+      SpacialCharRatioInURL
     };
 
     return features;

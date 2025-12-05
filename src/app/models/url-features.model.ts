@@ -23,7 +23,7 @@ export interface UrlFeatures {
   NoOfAmpersandInURL: number;
 
   NoOfOtherSpecialCharsInURL: number;
-  SpecialCharRatioInURL: number;
+  SpacialCharRatioInURL: number;
 
   CharContinuationRate: number;
 }

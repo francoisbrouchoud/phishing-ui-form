@@ -30,7 +30,7 @@ export class UrlPredictionService {
     return {
       NoOfOtherSpecialCharsInURL: String(features.NoOfOtherSpecialCharsInURL),
       LetterRatioInURL: String(features.LetterRatioInURL),
-      SpecialCharRatioInURL: String(features.SpecialCharRatioInURL),
+      SpacialCharRatioInURL: String(features.SpacialCharRatioInURL),
       DegitRatioInURL: String(features.DegitRatioInURL),
       NoOfLettersInURL: String(features.NoOfLettersInURL),
       NoOfDegitsInURL: String(features.NoOfDegitsInURL),
