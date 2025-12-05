@@ -69,7 +69,8 @@ export class AppComponent {
   apiModels = [
     { label: 'PHIUSIIL regénéré', value: 'phiusiil_gen/phiusiil_gen'},
     { label: 'PHIUSIIL original', value: 'OnlyURLSpecs/prediction' },
-    { label: 'Kaggle Mustafavi', value: 'kaggle1/kaggle1' }
+    { label: 'Kaggle Mustafavi', value: 'kaggle1/kaggle1' },
+    { label: 'PHIUSSIL + Kaggle', value: 'PhiUSIILKaggle/PhiUSIILKaggle' }
   ];
 
   selectedApiModel: string = this.apiModels[0].value;
