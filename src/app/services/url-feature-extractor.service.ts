@@ -42,7 +42,7 @@ export class UrlFeatureExtractorService {
 
     const charStats = this.computeCharacterStats(fullUrl);
 
-    const LetterRatioInURL = URLLength > 0 ? charStats.chart/ URLLength : 0;
+    const LetterRatioInURL = URLLength > 0 ? Math.round((NoOfLettersInURL / URLLength) * 1000) / 1000 : 0;
 
     const DegitRatioInURL = URLLength > 0 ? charStats.digits / URLLength : 0;
 
