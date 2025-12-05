@@ -42,7 +42,7 @@ export class UrlFeatureExtractorService {
 
     const charStats = this.computeCharacterStats(fullUrl);
 
-    const LetterRatioInURL = URLLength > 0 ? charStats.letters / URLLength : 0;
+    const LetterRatioInURL = URLLength > 0 ? charStats.chart/ URLLength : 0;
 
     const DegitRatioInURL = URLLength > 0 ? charStats.digits / URLLength : 0;
 
@@ -251,6 +251,34 @@ export class UrlFeatureExtractorService {
   }
 
 
+
+  // Helper pour décoder les entités HTML (&amp; -> &, etc.)
+  private htmlUnescape(value: string): string {
+    if (!value) {
+      return '';
+    }
+
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = value;
+    return textarea.value;
+  }
+
+  /**
+   * Reproduction de la logique Python :
+   *
+   * def normalize_url_for_special_chars(url):
+   *   - strip
+   *   - remove ^[a-zA-Z]+://
+   *   - remove ^www\.
+   *   - urllib.parse.unquote
+   *   - html.unescape
+   *
+   * def count_other_special_chars(url):
+   *   - pour chaque char de l'URL normalisée :
+   *       si lettre ou chiffre -> skip
+   *       si '=' ou '?' ou '&' -> skip
+   *       sinon -> count++
+   */
   private computeNoOfOtherSpecialChars(urlObj: URL): number {
     if (!urlObj) {
       return 0;
