@@ -225,13 +225,13 @@
                   
                   <div class="proba-bars">
                     <div class="proba-item">
-                      <span class="label">Légitime (0)</span>
-                      <mat-progress-bar mode="determinate" [value]="(getProba('0') || 0) * 100" color="primary"></mat-progress-bar>
+                      <span class="label">Phishing (0)</span>
+                      <mat-progress-bar mode="determinate" [value]="(getProba('0') || 0) * 100" color="warn"></mat-progress-bar>
                       <span class="value">{{ getProba('0')! | percent:'1.1-2' }}</span>
                     </div>
                     <div class="proba-item">
-                      <span class="label">Phishing (1)</span>
-                      <mat-progress-bar mode="determinate" [value]="(getProba('1') || 0) * 100" color="warn"></mat-progress-bar>
+                      <span class="label">Légitime (1)</span>
+                      <mat-progress-bar mode="determinate" [value]="(getProba('1') || 0) * 100" color="primary"></mat-progress-bar>
                       <span class="value">{{ getProba('1')! | percent:'1.1-2' }}</span>
                     </div>
                   </div>
