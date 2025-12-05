@@ -71,7 +71,8 @@ export class AppComponent {
     { label: 'PHIUSIIL original', value: 'OnlyURLSpecs/prediction' },
     { label: 'Kaggle Mustafavi', value: 'kaggle1/kaggle1' },
     { label: 'PHIUSSIL + Kaggle', value: 'PhiUSIILKaggle/PhiUSIILKaggle' },
-    { label: 'Early Kaggle Test', value: 'EarlyKaggleTest/EarlyKaggleTest' }
+    { label: 'Early Kaggle Test', value: 'EarlyKaggleTest/EarlyKaggleTest' },
+    { label: 'PhiUSILL alimenté', value: 'PhiUSIILAugmented/PhiUSIILAugmented'}
   ];
 
   selectedApiModel: string = this.apiModels[0].value;
