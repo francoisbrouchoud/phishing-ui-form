@@ -337,7 +337,7 @@ export class UrlFeatureExtractorService {
       return 0.0;
     }
 
-    return (L_alpha + L_digit + L_special) / denom;
+    return Math.round((L_alpha + L_digit + L_special) / denom * 1000) / 1000;
   }
 
 
