@@ -149,7 +149,6 @@ export class UrlFeatureExtractorService {
   /**
   * Compte les lettres, chiffres, caractères spéciaux, '?', '=', '&'.
   *
-  * - NoOfLettersInURL      : toutes les lettres A–Z / a–z
   * - NoOfDegitsInURL       : tous les chiffres 0–9
   * - NoOfEqualsInURL       : '='
   * - NoOfQMarkInURL        : '?'
@@ -159,14 +158,12 @@ export class UrlFeatureExtractorService {
   *
   */
   private computeCharacterStats(url: string): {
-    letters: number;
     digits: number;
     otherSpecials: number;
     qMarks: number;
     equals: number;
     ampersands: number;
   } {
-    let letters = 0;
     let digits = 0;
     let otherSpecials = 0;
     let qMarks = 0;
@@ -178,13 +175,7 @@ export class UrlFeatureExtractorService {
     for (let i = 0; i < len; i++) {
       const c = url[i];
 
-      const isLetter = /[A-Za-z]/.test(c);
       const isDigit = /[0-9]/.test(c);
-
-      if (isLetter) {
-        letters++;
-        continue;
-      }
 
       if (isDigit) {
         digits++;
@@ -208,7 +199,6 @@ export class UrlFeatureExtractorService {
     }
 
     return {
-      letters,
       digits,
       otherSpecials,
       qMarks,
