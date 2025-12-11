@@ -92,11 +92,48 @@ export class AppComponent {
       default: return `${value}`;
     }
   }
-  
+
+  get currentModelThreshold(): number {
+    const model = this.apiModels.find(m => m.value === this.selectedApiModel);
+    return model?.baseThreshold ?? 0.5;
+  }
+
   get currentSecurityLabel(): string {
     return this.formatSecurityLabel(this.securityLevel);
   }
-  
+
+  get phishingThreshold(): number {
+    const base = this.currentModelThreshold;
+
+    switch (this.securityLevel) {
+      case 0:
+        return base + (1 - base) * 0.3;
+      case 2:
+        return base * 0.7;    
+      default:
+        return base;
+    }
+  }
+
+  get isPhishing(): boolean {
+    const p = this.predictionResult;
+    if (!p) {
+      return false;
+    }
+
+    const phishingProba = p.probas?.['0'];
+
+    if (typeof phishingProba !== 'number') {
+      return p.prediction === '0';
+    }
+
+    if (this.securityLevel === 1) {
+      return p.prediction === '0';
+    }
+
+    return phishingProba >= this.phishingThreshold;
+  }
+
   analyze(): void {
     this.resetPredictionState();
     this.errorMessage = '';
