@@ -67,12 +67,12 @@ export class AppComponent {
   securityLevel: number = 1;
 
   apiModels = [
-    { label: 'PHIUSIIL regénéré', value: 'phiusiil_gen/phiusiil_gen'},
-    { label: 'PHIUSIIL original', value: 'OnlyURLSpecs/prediction' },
-    { label: 'Kaggle Mustafavi', value: 'kaggle1/kaggle1' },
-    { label: 'PHIUSSIL + Kaggle', value: 'PhiUSIILKaggle/PhiUSIILKaggle' },
-    { label: 'Early Kaggle Test', value: 'EarlyKaggleTest/EarlyKaggleTest' },
-    { label: 'PhiUSILL alimenté', value: 'PhiUSIILAugmented/PhiUSIILAugmented'}
+    { label: 'PhiUSIIL regénéré', value: 'phiusiil_gen/phiusiil_gen', baseThreshold: 0.5 },
+    { label: 'PhiUSIIL original', value: 'OnlyURLSpecs/prediction', baseThreshold: 0.6 },
+    { label: 'Kaggle External HM', value: 'kaggle1/kaggle1', baseThreshold: 0.45 },
+    { label: 'PhiUSIIL+ Kaggle', value: 'PhiUSIILKaggle/PhiUSIILKaggle', baseThreshold: 0.4 },
+    { label: 'Early Kaggle Test', value: 'EarlyKaggleTest/EarlyKaggleTest', baseThreshold: 0.15 },
+    { label: 'PhiUSIIL alimenté', value: 'PhiUSIILAugmented/PhiUSIILAugmented', baseThreshold: 0.125 }
   ];
 
   selectedApiModel: string = this.apiModels[0].value;
