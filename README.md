@@ -102,6 +102,9 @@ La webapp permet d’interroger plusieurs services de prédiction hébergés sur
 | **PhiUSIIL+ Kaggle**   | `PhiUSIILKaggle/PhiUSIILKaggle`          | 0.40                            |
 | **Early Kaggle Test**  | `EarlyKaggleTest/EarlyKaggleTest`        | 0.15                            |
 | **PhiUSIIL alimenté**  | `PhiUSIILAugmented/PhiUSIILAugmented`    | 0.125                           |
+| **Kaggle avec données du formulaire**  | `kaggle_augmented/kaggle_augmented`    | 0.475              |
+
+{ label: 'Kaggle augmented with form data', value: 'kaggle_augmented/kaggle_augmented', baseThreshold: 0.475 }
 
 > Plus le **seuil de base** est faible, plus le modèle est **sensible** au phishing pour une même probabilité de la classe “0 = phishing”.
 
