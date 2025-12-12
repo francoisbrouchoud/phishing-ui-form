@@ -96,15 +96,15 @@ La webapp permet d’interroger plusieurs services de prédiction hébergés sur
 
 | Libellé dans l’UI      | Service Dataiku (`serviceId/endpointId`) | Seuil de base (`baseThreshold`) |
 | ---------------------- | ---------------------------------------- | ------------------------------- |
-| **PhiUSIIL regénéré**  | `phiusiil_gen/phiusiil_gen`              | 0.50                            |
 | **PhiUSIIL original**  | `OnlyURLSpecs/prediction`                | 0.60                            |
-| **Kaggle External HM** | `kaggle1/kaggle1`                        | 0.45                            |
-| **PhiUSIIL+ Kaggle**   | `PhiUSIILKaggle/PhiUSIILKaggle`          | 0.40                            |
-| **Early Kaggle Test**  | `EarlyKaggleTest/EarlyKaggleTest`        | 0.15                            |
+| **PhiUSIIL reconstruit**  | `phiusiil_gen/phiusiil_gen`              | 0.50                            |
+| **Kaggle external HM** | `kaggle1/kaggle1`                        | 0.45                            |
+| **PhiUSIIL + Kaggle**   | `PhiUSIILKaggle/PhiUSIILKaggle`          | 0.40                            |
+| **Early Kaggle test**  | `EarlyKaggleTest/EarlyKaggleTest`        | 0.15                            |
 | **PhiUSIIL alimenté**  | `PhiUSIILAugmented/PhiUSIILAugmented`    | 0.125                           |
-| **Kaggle avec données du formulaire**  | `kaggle_augmented/kaggle_augmented`    | 0.475              |
+| **Kaggle + formulaire**  | `kaggle_augmented/kaggle_augmented`    | 0.475              |
 
-{ label: 'Kaggle augmented with form data', value: 'kaggle_augmented/kaggle_augmented', baseThreshold: 0.475 }
+
 
 > Plus le **seuil de base** est faible, plus le modèle est **sensible** au phishing pour une même probabilité de la classe “0 = phishing”.
 
