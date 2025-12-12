@@ -72,7 +72,8 @@ export class AppComponent {
     { label: 'Kaggle External HM', value: 'kaggle1/kaggle1', baseThreshold: 0.45 },
     { label: 'PhiUSIIL+ Kaggle', value: 'PhiUSIILKaggle/PhiUSIILKaggle', baseThreshold: 0.4 },
     { label: 'Early Kaggle Test', value: 'EarlyKaggleTest/EarlyKaggleTest', baseThreshold: 0.15 },
-    { label: 'PhiUSIIL alimenté', value: 'PhiUSIILAugmented/PhiUSIILAugmented', baseThreshold: 0.125 }
+    { label: 'PhiUSIIL alimenté', value: 'PhiUSIILAugmented/PhiUSIILAugmented', baseThreshold: 0.125 },
+    { label: 'Kaggle augmented', value: 'kaggle_augmented/kaggle_augmented', baseThreshold: 0.475 }
   ];
 
   selectedApiModel: string = this.apiModels[0].value;
